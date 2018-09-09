@@ -1,0 +1,85 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+//apply plugin: 'scala'
+
+group = 'com.akkademy' // 会按照group生成.m2下的目录路径
+version = '1.0.0-RELEASE' // 指定版本
+
+task "createDirs" << {
+    sourceSets*.scala.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+  compile 'com.typesafe.akka:akka-actor_2.12:2.5.16'
+  compile 'org.scala-lang.modules:scala-java8-compat_2.12:0.9.0'
+  compile 'com.typesafe.akka:akka-remote_2.12:2.5.16'
+
+  testCompile 'com.typesafe.akka:akka-testkit_2.12:2.5.16'
+  testCompile 'junit:junit:4.12'
+}
+
+
+mainClassName = "com.akkademy.Main"
+
+
+task runApp(type: JavaExec, dependsOn: classes) {
+    main = 'com.akkademy.Main'
+    classpath sourceSets.main.runtimeClasspath
+    classpath configurations.runtime
+}
+//Maven仓库的URL
+//注意需要在防火墙的高级规则中添加允许入站规则http://bbs.csdn.net/topics/390728329
+//def MAVEN_REPO_RELEASE_URL= 'http://192.168.2.189:8081/nexus/content/repositories/releases/'
+//def MAVEN_REPO_SNAPSHOT_URL= 'http://192.168.2.189:8081/nexus/content/repositories/snapshots/'
+////登录nexus ossde的用户名
+//def NEXUS_USERNAME='admin'
+////登录nexus oss的密码
+//def NEXUS_PASSWORD='admin123'
+//def ARTIFACT_ID = 'server-common'
+//// type
+def TYPE = 'jar'
+//description
+def DESCRIPTION = 'This is Token service included add,edit,delete,query'
+def localGradleRepo = uri('G:/.gradle/caches/modules-2/iles-2.1')
+def localMavenRepo = uri('G:/.m2/repository')
+
+uploadArchives {
+    configuration = configurations.archives
+//    repositories {
+//        mavenDeployer  {
+//            repository(url: localMavenRepo) //定义本地maven仓库的地址
+//            repository(url: localGradleRepo) //定义本地Gradle仓库的地址
+////            pom.project {
+////                version version
+////                artifactId 'AKKA-demp'
+////                groupId group
+////                packaging TYPE
+////                description DESCRIPTION
+////            }
+//        }
+//    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
+
+install {
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url localMavenRepo
+        }
+    }
+}
