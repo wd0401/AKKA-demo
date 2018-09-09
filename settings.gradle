@@ -2,3 +2,4 @@ rootProject.name = 'akka-demo'
 
 include 'akka-db'
 include 'akka-client'
+include 'akka-demaid'
