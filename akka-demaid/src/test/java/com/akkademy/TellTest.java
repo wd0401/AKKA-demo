@@ -7,15 +7,23 @@ import akka.actor.Status;
 import akka.testkit.TestProbe;
 import akka.util.Timeout;
 import com.akkademy.messages.GetRequest;
+import com.akkdemy.HttpResponse;
+import com.akkdemy.ParseArticle;
+import com.akkdemy.ParsingActor;
+import com.akkdemy.TellDemoArticleParser;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
+
+import java.util.concurrent.TimeUnit;
 
 import static akka.pattern.Patterns.ask;
 
 public class TellTest {
     ActorSystem system = ActorSystem.create("testSystem");
-    Timeout timeout = Timeout.longToTimeout(10000);
+    Timeout timeout = Timeout.durationToTimeout(Duration.create(5,TimeUnit.SECONDS));
+
 
     TestProbe cacheProbe = new TestProbe(system);
     TestProbe httpClientProbe = new TestProbe(system);

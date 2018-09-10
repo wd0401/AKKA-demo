@@ -1,4 +1,4 @@
-package com.akkademy;
+package com.akkdemy;
 
 public class ParseArticle {
     public final String url;

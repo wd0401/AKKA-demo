@@ -7,15 +7,22 @@ import akka.actor.Status;
 import akka.testkit.TestProbe;
 import akka.util.Timeout;
 import com.akkademy.messages.GetRequest;
+import com.akkdemy.AskDemoArticleParser;
+import com.akkdemy.HttpResponse;
+import com.akkdemy.ParseArticle;
+import com.akkdemy.ParsingActor;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
+
+import java.util.concurrent.TimeUnit;
 
 import static akka.pattern.Patterns.ask;
 
 public class AskTest {
     ActorSystem system = ActorSystem.create("testSystem");
-    Timeout timeout = Timeout.longToTimeout(10000);
+    Timeout timeout = Timeout.durationToTimeout(Duration.create(5,TimeUnit.SECONDS));
 
     TestProbe cacheProbe = new TestProbe(system);
     TestProbe httpClientProbe = new TestProbe(system);
@@ -32,8 +39,8 @@ public class AskTest {
 
     @Test
     public void itShouldParseArticleTest() throws Exception {
-        Future f = ask(askDemoActor, new ParseArticle(("http://www.google.com")), timeout);
-        cacheProbe.expectMsgClass(GetRequest.class);
+        Future f = ask(askDemoActor, new ParseArticle(("http://www.baddidu.com")), timeout);
+        cacheProbe.expectMsgClass(ParseArticle.class);
         cacheProbe.reply(new Status.Failure(new Exception("no cache")));
 
         httpClientProbe.expectMsgClass(String.class);

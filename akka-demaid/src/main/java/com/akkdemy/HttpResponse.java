@@ -1,4 +1,4 @@
-package com.akkademy;
+package com.akkdemy;
 
 public class HttpResponse {
     public final String body;
